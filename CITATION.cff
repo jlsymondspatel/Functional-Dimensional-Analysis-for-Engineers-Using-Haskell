@@ -3,6 +3,6 @@ message: "If you use this software, please cite it as below."
 authors:
   - family-names: Symonds Patel
     given-names: Jaimin
-title: "Functional Dimensional Analysis for Engineers Using Haskell"
+title: "Functional Dimensional Analysis for Engineers Using Haskell - Source Code"
 version: 1.0.0
 date-released: 2023-06-12
