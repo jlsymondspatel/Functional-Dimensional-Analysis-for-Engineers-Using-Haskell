@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Symonds Patel
+    given-names: Jaimin
+title: "My Research Software"
+version: 1.0.0
+date-released: 2023-06-12
