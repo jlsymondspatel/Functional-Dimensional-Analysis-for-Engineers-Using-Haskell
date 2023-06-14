@@ -52,20 +52,22 @@ normstdpdf =  SD.density SDN.standard
 unifpdf :: Double -> Double -> Double -> Double
 unifpdf a b x = SD.density (SDU.uniformDistr a b) x
 
-dx1 = 0.05 :: Double
-dx2 = 0.05 :: Double
-dxs = [dx1,dx2]
+dx1 = 0.1 :: Double -- l
+dx2 = 0.1 :: Double -- g
+dx3 = 0.1 :: Double -- tau
+dxs = [dx1,dx2,dx3]
 
-x1s = [0,dx1..20]
-x2s = [0,dx2..5]
-xss = [x1s,x2s]
+x1s = [12,(12+dx1)..18] -- l
+x2s = [7,(7+dx2)..13] -- g
+x3s = [2,(2+dx3)..8] -- tau
+xss = [x1s,x2s,x3s]
 
 g :: Transform
-g [x1,x2] = pure (x1 * x2)
+g [x1,x2,x3] = pure ((x1**(-0.5)) * (x2**0.5) * x3)
 g _ = pure 0
 
 fPDF :: OriginalPDF
-fPDF [x1,x2] = pure ((normpdf 10 1 x1) * (unifpdf 1 3 x2))
+fPDF [x1,x2,x3] = pure ((normpdf 15 1 x1) * (normpdf 9.8 1 x2) * (normpdf 5.4 1 x3))
 fPDF _ = pure 0
 
 dy = YS 0.1
@@ -73,5 +75,5 @@ dy = YS 0.1
 pushPDF :: OriginalPDF -> Transform -> YS Double -> YS (PDF Double)
 pushPDF f g y = fmap fsCDFtoPDF $ (fmap . fmap) (/ ((\(YS u) -> u) dy)) dFy
   where pushCDF yval = pure $ fsPDFtoCDF $ fmap (product dxs *) . fmap sum . sequenceA $ fCartProdFilt :: YS (CDF Double)
-          where fCartProdFilt = map f . filter (\x1x2s -> g x1x2s <= yval) $ sequence xss
+          where fCartProdFilt = map f . filter (\xs -> g xs <= yval) $ sequence xss
         dFy = (liftA2 . liftA2) (-) (pushCDF (liftA2 (+) y dy)) (pushCDF y) :: YS (CDF Double)
